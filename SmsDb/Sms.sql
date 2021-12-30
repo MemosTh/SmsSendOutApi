@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[Sms]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [Recipient] NVARCHAR(15) NULL, 
+    [Body] TEXT NULL
+)
