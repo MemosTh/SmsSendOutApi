@@ -1,13 +1,16 @@
 ﻿using System.Text.RegularExpressions;
 using DataAccess.Data;
 using DataAccess.Models;
-using Microsoft.AspNetCore.Mvc;
 using SmsSendOutApi.Enums;
 
+namespace SmsSendOutApi.SmsVendors;
 
-namespace SmsSendOutApi;
+public interface ISmsVendor
+{
+    Task<IResult> SmsVendorManager(SmsModel sms);
+}
 
-public class SmsVendor 
+public class SmsVendor : ISmsVendor
 {
     private static ISmsRepository _data;
 
@@ -18,7 +21,6 @@ public class SmsVendor
 
     public async Task<IResult> SmsVendorManager(SmsModel sms)
     {
-        
         var phoneNumberUtil = PhoneNumbers.PhoneNumberUtil.GetInstance();
         var phoneNumber = phoneNumberUtil.Parse(sms.Recipient, null);
         CountryCode countryCode = (CountryCode)phoneNumber.CountryCode;
@@ -39,7 +41,6 @@ public class SmsVendor
 
     private async Task<IResult> SMSVendorGR(SmsModel sms)
     {
-        
         var match = Regex.Match(sms.Body, "^[α-ω Α-Ω0-9]*$", RegexOptions.IgnoreCase);
 
         if (!match.Success)
@@ -55,7 +56,6 @@ public class SmsVendor
             await _data.InsertSms(sms);
             return Results.Ok();
         }
-        
     }
 
     private async Task<IResult> SMSVendorCY(SmsModel sms)
@@ -103,13 +103,10 @@ public class SmsVendor
             await _data.InsertSms(sms);
             return Results.Ok();
         }
-        
     }
 
     private bool CharactersCountValidation(string smsBody)
     {
         return smsBody.Length <= 480;
     }
-
-   
 }
