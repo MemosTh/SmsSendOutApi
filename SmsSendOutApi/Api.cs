@@ -7,23 +7,22 @@ namespace SmsSendOutApi;
 
 public static class Api
 {
-    private readonly static IEnumerable<ISmsVendor> _smsVendors;
     public static void ConfigureApi(this WebApplication app)
     {
         app.MapPost("/sendSms", InsertSms);
     }
 
 
-    private static async Task<IResult> InsertSms(SmsModel sms, IEnumerable<ISmsVendor> smsVendor, ISmsRepository data)
+    private static async Task<IResult> InsertSms(SmsModel sms, IEnumerable<ISmsVendor> smsVendors)
     {
 
         var countryCode = GetCountryCode(sms);
 
         try
         {
-            return smsVendor.FirstOrDefault(x => x.CountryCode == countryCode) != null
-                ? await smsVendor.FirstOrDefault(x => x.CountryCode == countryCode).SmsInsert(sms)
-                : await smsVendor.FirstOrDefault(x => x.CountryCode == CountryCode.General).SmsInsert(sms);
+            return smsVendors.FirstOrDefault(x => x.CountryCode == countryCode) != null
+                ? await smsVendors.FirstOrDefault(x => x.CountryCode == countryCode).SmsInsert(sms)
+                : await smsVendors.FirstOrDefault(x => x.CountryCode == CountryCode.General).SmsInsert(sms);
         }
         catch (Exception e)
         {
