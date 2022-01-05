@@ -7,28 +7,23 @@ namespace SmsSendOutApi;
 
 public static class Api
 {
+    private readonly static IEnumerable<ISmsVendor> _smsVendors;
     public static void ConfigureApi(this WebApplication app)
     {
         app.MapPost("/sendSms", InsertSms);
     }
 
 
-    private static async Task<IResult> InsertSms(SmsModel sms, ISmsVendor smsVendor, ISmsRepository data)
+    private static async Task<IResult> InsertSms(SmsModel sms, IEnumerable<ISmsVendor> smsVendor, ISmsRepository data)
     {
-        Dictionary<CountryCode, ISmsVendor> strategies = new Dictionary<CountryCode, ISmsVendor>()
-        {
-            {CountryCode.Greece, new SmsVendorGR(data)},
-            {CountryCode.Cyprus, new SmsVendorCY(data)},
-            {CountryCode.General, new SmsVendor(data)}
-        };
 
         var countryCode = GetCountryCode(sms);
 
         try
         {
-            return strategies.ContainsKey(countryCode)
-                ? await strategies[countryCode].SmsInsert(sms)
-                : await strategies[CountryCode.General].SmsInsert(sms);
+            return smsVendor.FirstOrDefault(x => x.CountryCode == countryCode) != null
+                ? await smsVendor.FirstOrDefault(x => x.CountryCode == countryCode).SmsInsert(sms)
+                : await smsVendor.FirstOrDefault(x => x.CountryCode == CountryCode.General).SmsInsert(sms);
         }
         catch (Exception e)
         {

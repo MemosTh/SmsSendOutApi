@@ -1,16 +1,19 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
+using SmsSendOutApi.Enums;
 
 namespace SmsSendOutApi.SmsVendors;
 
 public interface ISmsVendor
 {
     Task<IResult> SmsInsert(SmsModel sms);
+    public CountryCode CountryCode { get; }
 }
 
 public class SmsVendor : ISmsVendor
 {
     private static ISmsRepository _data;
+    public CountryCode CountryCode { get; } = CountryCode.General;
 
     public SmsVendor(ISmsRepository data)
     {

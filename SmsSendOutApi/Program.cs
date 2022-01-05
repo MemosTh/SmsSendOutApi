@@ -12,6 +12,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<ISmsRepository, SmsRepository>();
 builder.Services.AddSingleton<ISmsVendor, SmsVendor>();
+builder.Services.AddSingleton<ISmsVendor, SmsVendorGR>();
+builder.Services.AddSingleton<ISmsVendor, SmsVendorCY>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

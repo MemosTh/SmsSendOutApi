@@ -1,11 +1,15 @@
 ﻿using DataAccess.Data;
 using DataAccess.Models;
+using SmsSendOutApi.Enums;
 
 namespace SmsSendOutApi.SmsVendors;
 
 public class SmsVendorCY : ISmsVendor
 {
     private static ISmsRepository _data;
+
+    public CountryCode CountryCode { get; } = CountryCode.Cyprus;
+
 
     public SmsVendorCY(ISmsRepository data)
     {
